@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/product")
@@ -32,6 +33,21 @@ public class ProductController {
         }
 
         return ResponseEntity.ok(products);
+    }
+
+    /**
+     * API Chi Tiết Sản Phẩm (Product Detail)
+     * URL: GET /api/product/{id}
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductDetail(@PathVariable Integer id) {
+        Optional<ProductDTO> product = productService.getProductById(id);
+
+        if (product.isPresent()) {
+            return ResponseEntity.ok(product.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
 

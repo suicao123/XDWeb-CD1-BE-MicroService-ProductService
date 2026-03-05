@@ -7,12 +7,23 @@ public class ProductDTO {
     private String productname;
     private Double price;
     private String image;
+    private String description;
+    private Integer status;
 
     public ProductDTO(Integer id, String productname, Double price, String image) {
         this.id = id;
         this.productname = productname;
         this.price = price;
         this.image = image;
+    }
+
+    public ProductDTO(Integer id, String productname, Double price, String image, String description, Integer status) {
+        this.id = id;
+        this.productname = productname;
+        this.price = price;
+        this.image = image;
+        this.description = description;
+        this.status = status;
     }
 
     // Constructor cũ để backward compatible
@@ -26,5 +37,7 @@ public class ProductDTO {
     public String getProductname() { return productname; }
     public Double getPrice() { return price; }
     public String getImage() { return image; }
+    public String getDescription() { return description; }
+    public Integer getStatus() { return status; }
 }
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -32,6 +33,15 @@ public class CartController {
 
         List<CartItemDTO> cartItems = cartService.getCartByUserId(userId);
         return ResponseEntity.ok(cartItems);
+    }
+
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<?> removeCartItem(
+            @PathVariable Integer id,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        cartService.removeCartItem(id);
+        return ResponseEntity.ok(Map.of("message", "Xóa thành công"));
     }
 }
 

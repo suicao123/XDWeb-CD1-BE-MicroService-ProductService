@@ -18,6 +18,11 @@ public class CartService {
         this.cartItemRepository = cartItemRepository;
     }
 
+    // Xóa sản phẩm khỏi giỏ hàng theo id
+    public void removeCartItem(Integer id) {
+        cartItemRepository.deleteById(id);
+    }
+
     // Lấy danh sách giỏ hàng theo userId
     public List<CartItemDTO> getCartByUserId(Integer userId) {
         List<CartItem> items = cartItemRepository.findByUserId(userId);

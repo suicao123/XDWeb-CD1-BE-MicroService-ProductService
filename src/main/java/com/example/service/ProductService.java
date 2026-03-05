@@ -50,6 +50,14 @@ public class ProductService {
     }
 
     /**
+     * Tìm kiếm sản phẩm theo từ khóa
+     */
+    public List<ProductDTO> searchProducts(String keyword) {
+        List<Product> products = productRepository.searchByKeyword(keyword);
+        return convertToDTO(products);
+    }
+
+    /**
      * Chuyển đổi từ Product entity sang ProductDTO
      */
     private List<ProductDTO> convertToDTO(List<Product> products) {

@@ -49,5 +49,19 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    /**
+     * API Tìm Kiếm Sản Phẩm (Search Products)
+     * URL: GET /api/product/search/
+     * Query Parameter: q (Từ khóa tìm kiếm)
+     * Ví dụ: GET /api/product/search/?q=iphone
+     */
+    @GetMapping("/search/")
+    public ResponseEntity<List<ProductDTO>> searchProducts(
+            @RequestParam(value = "q", required = false, defaultValue = "") String keyword) {
+
+        List<ProductDTO> products = productService.searchProducts(keyword);
+        return ResponseEntity.ok(products);
+    }
 }
 

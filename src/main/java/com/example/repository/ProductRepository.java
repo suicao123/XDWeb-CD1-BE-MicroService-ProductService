@@ -17,5 +17,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     // Lấy tất cả sản phẩm (mặc định)
     @Query(value = "SELECT * FROM products", nativeQuery = true)
     List<Product> findAllProducts();
+
+    // Tìm kiếm sản phẩm theo từ khóa trong productname hoặc description
+    @Query(value = "SELECT * FROM products WHERE productname LIKE %?1% OR description LIKE %?1%", nativeQuery = true)
+    List<Product> searchByKeyword(String keyword);
 }
 

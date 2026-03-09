@@ -46,8 +46,15 @@ public class CartService {
         }
     }
 
-    // Xóa sản phẩm khỏi giỏ hàng theo id
-    public void removeCartItem(Integer id) {
+    // Xóa sản phẩm khỏi giỏ hàng theo id, kiểm tra quyền sở hữu
+    public void removeCartItem(Integer id, Integer userId) {
+        CartItem item = cartItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy item trong giỏ hàng"));
+
+        if (!item.getUserId().equals(userId)) {
+            throw new RuntimeException("Bạn không có quyền xóa item này");
+        }
+
         cartItemRepository.deleteById(id);
     }
 
@@ -57,9 +64,12 @@ public class CartService {
 
         return items.stream().map(item -> {
             ProductDTO productDTO = new ProductDTO(
+                    item.getProduct().getId(),
                     item.getProduct().getProductname(),
                     item.getProduct().getPrice(),
-                    item.getProduct().getImage()
+                    item.getProduct().getImage(),
+                    item.getProduct().getDescription(),
+                    item.getProduct().getStatus()
             );
             return new CartItemDTO(item.getId(), item.getQuantity(), productDTO);
         }).collect(Collectors.toList());

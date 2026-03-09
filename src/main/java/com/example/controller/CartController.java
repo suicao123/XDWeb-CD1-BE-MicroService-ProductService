@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.dto.AddToCartDTO;
 import com.example.dto.CartItemDTO;
 import com.example.service.CartService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,38 +21,27 @@ public class CartController {
         this.cartService = cartService;
     }
 
+    /**
+     * Lấy danh sách giỏ hàng của user hiện tại.
+     * userId được trích xuất từ JWT token (đã được JwtAuthFilter xử lý).
+     */
     @GetMapping
-    public ResponseEntity<?> getCart(@RequestHeader(value = "Authorization", required = false) String authHeader) {
-
-//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body("Thiếu hoặc sai token xác thực.");
-//        }
-//
-//        String token = authHeader.substring(7);
-//
-        Integer userId = 1;
-
+    public ResponseEntity<?> getCart(HttpServletRequest request) {
+        Integer userId = (Integer) request.getAttribute("userId");
         List<CartItemDTO> cartItems = cartService.getCartByUserId(userId);
         return ResponseEntity.ok(cartItems);
     }
 
+    /**
+     * Thêm sản phẩm vào giỏ hàng.
+     * userId được trích xuất từ JWT token.
+     */
     @PostMapping("/add")
     public ResponseEntity<?> addToCart(
             @RequestBody AddToCartDTO request,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+            HttpServletRequest httpRequest) {
 
-        // Kiểm tra Authorization header
-//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body(Map.of("error", "Thiếu hoặc sai token xác thực."));
-//        }
-//
-//        // Lấy token (có thể dùng để xác thực từ user service)
-//        String token = authHeader.substring(7);
-
-        // Tạm thời sử dụng userId = 1
-        Integer userId = 1;
+        Integer userId = (Integer) httpRequest.getAttribute("userId");
 
         try {
             cartService.addToCart(userId, request.getProduct_id(), request.getQuantity());
@@ -63,13 +53,24 @@ public class CartController {
         }
     }
 
+    /**
+     * Xóa một item khỏi giỏ hàng theo id.
+     * userId từ token dùng để xác minh item thuộc về user này.
+     */
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<?> removeCartItem(
             @PathVariable Integer id,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+            HttpServletRequest request) {
 
-        cartService.removeCartItem(id);
-        return ResponseEntity.ok(Map.of("message", "Xóa thành công"));
+        Integer userId = (Integer) request.getAttribute("userId");
+        try {
+            cartService.removeCartItem(id, userId);
+            return ResponseEntity.ok(Map.of("message", "Xóa thành công"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 }
+
 

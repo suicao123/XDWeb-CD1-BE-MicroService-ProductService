@@ -41,6 +41,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        String requestPath = request.getRequestURI();
+
+        // Chỉ áp dụng JWT filter cho các endpoint cart
+        if (!isCartEndpoint(requestPath)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
         String token = jwtService.resolveToken(authHeader);
 
@@ -70,6 +78,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Kiểm tra xem request có phải là endpoint cart không
+     */
+    private boolean isCartEndpoint(String requestPath) {
+        return requestPath.equals("/api/cart") ||
+                requestPath.equals("/api/cart/add") ||
+                requestPath.matches("/api/cart/remove/\\d+");
     }
 }
 

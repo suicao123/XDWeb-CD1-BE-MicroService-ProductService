@@ -39,9 +39,9 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Các route cart yêu cầu JWT
-                .requestMatchers("/api/cart", "/api/cart/**").authenticated()
-                // Các route còn lại (products, v.v.) mở public
+                // Chỉ các route cart cụ thể yêu cầu JWT
+                .requestMatchers("/api/cart", "/api/cart/add", "/api/cart/remove/**").authenticated()
+                // Các route còn lại mở public
                 .anyRequest().permitAll()
             )
             // Chèn JwtAuthFilter trước UsernamePasswordAuthenticationFilter

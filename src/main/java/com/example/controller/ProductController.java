@@ -39,7 +39,7 @@ public class ProductController {
      * API Chi Tiết Sản Phẩm (Product Detail)
      * URL: GET /api/product/{id}
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     public ResponseEntity<?> getProductDetail(@PathVariable Integer id) {
         Optional<ProductDTO> product = productService.getProductById(id);
 

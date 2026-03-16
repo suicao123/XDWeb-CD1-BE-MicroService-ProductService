@@ -36,7 +36,7 @@ public class CartController {
      * Thêm sản phẩm vào giỏ hàng.
      * userId được trích xuất từ JWT token.
      */
-    @PostMapping("/add")
+    @PostMapping("/add/")
     public ResponseEntity<?> addToCart(
             @RequestBody AddToCartDTO request,
             HttpServletRequest httpRequest) {
@@ -57,7 +57,7 @@ public class CartController {
      * Xóa một item khỏi giỏ hàng theo id.
      * userId từ token dùng để xác minh item thuộc về user này.
      */
-    @DeleteMapping("/remove/{id}")
+    @DeleteMapping("/remove/{id}/")
     public ResponseEntity<?> removeCartItem(
             @PathVariable Integer id,
             HttpServletRequest request) {

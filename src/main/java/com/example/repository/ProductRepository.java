@@ -3,6 +3,7 @@ package com.example.repository;
 import com.example.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,7 +20,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findAllProducts();
 
     // Tìm kiếm sản phẩm theo từ khóa trong productname hoặc description
-    @Query(value = "SELECT * FROM products WHERE productname LIKE %?1% OR description LIKE %?1%", nativeQuery = true)
-    List<Product> searchByKeyword(String keyword);
+    @Query(value = "SELECT * FROM products " +
+            "WHERE LOWER(productname) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(description) LIKE LOWER(CONCAT('%', :keyword, '%'))",
+            nativeQuery = true)
+    List<Product> searchByKeyword(@Param("keyword") String keyword);
 }
 
